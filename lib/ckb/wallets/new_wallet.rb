@@ -33,7 +33,7 @@ module CKB
       # @param to_infos [Hash<String, Hash>], key: address, value: output infos. eg: { capacity: 1000, type: CKB::Types::Script.new(code_hash: "", args: "", hash_type: ""), data: "0x" }
       # @params contexts [hash], key: input lock script hash, value: tx generating context
       # @param fee_rate [Integer] Default 1 shannon / transaction byte
-      def advance_generate(to_infos:, contexts: [], fee_rate: 1)
+      def advance_generate(to_infos:, contexts: [], fee_rate: 1, order: "asc")
         outputs = []
         outputs_data = []
         to_infos.each do |to_address, output_info|
@@ -52,7 +52,7 @@ module CKB
         )
         tx_generator = CKB::TransactionGenerator.new(api, transaction)
 
-        tx_generator.generate(collector: collector, contexts: input_scripts.map(&:compute_hash).zip(contexts).to_h, fee_rate: fee_rate)
+        tx_generator.generate(collector: collector(order), contexts: input_scripts.map(&:compute_hash).zip(contexts).to_h, fee_rate: fee_rate)
         tx_generator
       end
 
@@ -64,10 +64,10 @@ module CKB
 
       private
 
-      def collector
+      def collector(order)
         collector = if collector_type == :default_indexer
           search_keys = input_scripts.map { |script| CKB::Indexer::Types::SearchKey.new(script, "lock") }
-          CKB::Collector.new(indexer_api).default_indexer(search_keys: search_keys)
+          CKB::Collector.new(indexer_api).default_indexer(search_keys: search_keys, order: order)
         else
           raise "unsupported collector type"
         end
