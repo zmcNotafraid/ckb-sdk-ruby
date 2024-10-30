@@ -12,6 +12,17 @@ RSpec.describe CKB::AddressParser do
     let(:full_payload_custom_args_address) { "ckt1q2n9dutjk669cfznq7httfar0gtk7qp0du3wjfvzck9l0w3k9eqhvg7r98kkxrtvuag8z2j8w4pkw2k6k4lkn9y5sl04c6" }
     let(:full_payload_custom_code_hash_address) { "ckt1qsvf96jqmq4483ncl7yrzfzshwchu9jd0glq4yy5r2jcsw04d7xlydkr98kkxrtvuag8z2j8w4pkw2k6k4l5c02auef" }
 
+    it "parse 2021 full data2 address" do
+      lock = CKB::Types::Script.new(code_hash: "0x9bd7e06f3ecf4be0f2fcd2188b23f1b9fcc88e5d4b65a8637b17723bbda3cce8", hash_type: "data2", args: "0x9042f2121b9767df47d14627c71774b986226d0f")
+      parsed_address = CKB::AddressParser.new("ckt1qzda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xwspysgtepyxuhvl05052xylr3wa9esc3x6rcym3khk").parse
+      expect(parsed_address.mode).to eq CKB::MODE::TESTNET
+      expect(parsed_address.script.args).to eq lock.args
+      expect(parsed_address.script.code_hash).to eq lock.code_hash
+      expect(parsed_address.script.hash_type).to eq lock.hash_type
+      expect(parsed_address.address_type).to eq "FULL"
+    end
+
+
     it "parse short payload singlesig address" do
       parsed_address = CKB::AddressParser.new(short_payload_singlesig_address).parse
       expect(parsed_address.mode).to eq CKB::MODE::TESTNET
@@ -302,5 +313,6 @@ RSpec.describe CKB::AddressParser do
       expect(parsed_address.script.hash_type).to eq lock.hash_type
       expect(parsed_address.address_type).to eq "FULL"
     end
+
   end
 end
