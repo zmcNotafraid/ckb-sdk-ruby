@@ -90,7 +90,7 @@ module CKB
       hash_type = CKB::Utils.bin_to_hex(data[code_hash_size + 1...code_hash_size + 2]).hex
       args = CKB::Utils.bin_to_hex(data[code_hash_size + 2..-1])
       OpenStruct.new(mode: mode,
-                     script: CKB::Types::Script.new(code_hash: code_hash, args: args, hash_type: CKB::ScriptHashType::TYPES[hash_type]), address_type: parse_address_type(format_type))
+                     script: CKB::Types::Script.new(code_hash: code_hash, args: args, hash_type: CKB::ScriptHashType::TYPES_WITH_INDEX[hash_type]), address_type: parse_address_type(format_type))
     end
 
     def parse_hash_type(format_type)

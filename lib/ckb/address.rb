@@ -120,7 +120,7 @@ module CKB
 
     def current_version_full_payload(format_type)
       args = script.has_args? ? CKB::Utils.hex_to_bin(script.args) : ""
-      hash_type = [CKB::ScriptHashType::TYPES.index(script.hash_type)].pack("C")
+      hash_type = [CKB::ScriptHashType::TYPES_WITH_INDEX.key(script.hash_type)].pack("C")
       [format_type].pack("H*") + CKB::Utils.hex_to_bin(script.code_hash) + hash_type + args
     end
 
